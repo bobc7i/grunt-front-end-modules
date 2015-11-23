@@ -1,0 +1,47 @@
+{
+  "name": "grunt-front-end-modules",
+  "description": "Use npm to manage front-end dependencies",
+  "version": "1.1.0",
+  "homepage": "https://github.com/bobc7i/grunt-front-end-modules",
+  "author": {
+    "name": "Bob Czarnecki",
+    "email": "robac7i@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bobc7i/grunt-front-end-modules.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bobc7i/grunt-front-end-modules/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/bobc7i/grunt-front-end-modules/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.9.2",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt": "~0.4.5"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "keywords": [
+    "gruntplugin"
+  ],
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "grunt-contrib-copy": "^0.8.2",
+    "path": "^0.12.7",
+    "underscore": "^1.8.3"
+  }
+}
