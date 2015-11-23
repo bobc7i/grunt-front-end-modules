@@ -36,7 +36,11 @@
     "grunt": "~0.4.5"
   },
   "keywords": [
-    "gruntplugin"
+    "npm",
+    "frontend",
+    "front end",
+    "dependencies",
+    "management"
   ],
   "dependencies": {
     "chalk": "^1.1.1",
