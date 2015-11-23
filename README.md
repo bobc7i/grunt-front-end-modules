@@ -1,4 +1,6 @@
-# grunt-front-end-modules [![Build Status](https://travis-ci.org/bobc7i/grunt-front-end-modules.svg?branch=master)](https://travis-ci.org/bobc7i/grunt-front-end-modules)
+# grunt-front-end-modules
+
+[![Build Status](https://travis-ci.org/bobc7i/grunt-front-end-modules.svg?branch=master)](https://travis-ci.org/bobc7i/grunt-front-end-modules)
 
 > Use npm to manage front-end dependencies
 
