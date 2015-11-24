@@ -82,7 +82,7 @@ module.exports = function(grunt) {
         test: {
           modulesPath: 'test/fixtures/globs2/node_modules'
         }
-      },
+      }
     },
 
     nodeunit: {
