@@ -75,12 +75,32 @@ exports.front_end_modules = {
     test.done();
   },
 
+  'pkg-specific-simple': function(test) {
+    test.expect(1);
+
+    var source = grunt.file.read('test/fixtures/pkg-specific-simple/node_modules/pkg-specific-simple/dist/pss.js');
+    var copied = grunt.file.read('tmp/test/dest/pkg-specific-simple/pss.js');
+    test.equal(source, copied, 'should copy dist file');
+
+    test.done();
+  },
+
   'pkg-specific': function(test) {
     test.expect(1);
 
     var source = grunt.file.read('test/fixtures/pkg-specific/node_modules/pkg-specific/dist/ps.js');
     var copied = grunt.file.read('tmp/test/dest/pkg-specific/ps.js');
     test.equal(source, copied, 'should copy main file');
+
+    test.done();
+  },
+
+  cjs: function(test) {
+    test.expect(1);
+
+    var expected = grunt.file.read('test/expected/cjs/cjs.js');
+    var bundled = grunt.file.read('tmp/test/dest/cjs/cjs.js');
+    test.equal(expected, bundled, 'should browserify');
 
     test.done();
   },

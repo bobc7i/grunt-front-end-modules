@@ -13,7 +13,9 @@ module.exports = function (grunt) {
       path = require('path'),
       chalk = require('chalk');
 
+  require('grunt-then/tasks/then')(grunt);
   require('grunt-contrib-copy/tasks/copy')(grunt);
+  require('grunt-browserify/tasks/browserify')(grunt);
 
   var getModuleFiles = function (modulesPath, key) {
     var pkgFile = path.join(modulesPath, 'package.json');
@@ -75,7 +77,7 @@ module.exports = function (grunt) {
   };
 
   var addCwd = function (mapping, cwd) {
-    if (mapping.expand === false || (typeof mapping.cwd === 'string' && mapping.cwd.indexOf(cwd) === 0)) { return; }
+    if (mapping.expand === false || (typeof mapping.cwd === 'string' && mapping.cwd.startsWith(cwd))) { return; }
     mapping.expand = true;
     mapping.cwd = path.join(cwd, mapping.cwd || '');
   };
@@ -86,34 +88,87 @@ module.exports = function (grunt) {
     }
   };
 
-  var augmentCopyConfig = function (mapping, cwd, dest) {
+  var augmentFilesConfig = function (mapping, cwd, dest) {
     addCwd(mapping, cwd);
     addDest(mapping, dest);
   };
 
-  var toCopyConfig = function (moduleName, options, data) {
+  var addFilesConfig = function (config) {
+    var entry = {
+      flatten: true,
+      src: config.src
+    };
+    delete config.src;
+    config.files = [];
+    config.files.push(entry);
+
+    if (config.dest) {
+      entry.dest = config.dest;
+      delete config.dest;
+    }
+  };
+
+  var toFilesConfig = function (moduleName, options, data) {
     var modulesPath = path.join(options.modulesPath, moduleName);
-
     var config = _(data).clone();
-    if (config.src) {
-      augmentCopyConfig(config, modulesPath, options.dest);
 
-    } else if (_.isArray(config.files)) {
-      config.files.forEach(function (entry) { augmentCopyConfig(entry, modulesPath, options.dest); });
+    if (config.src) {
+      addFilesConfig(config);
+    }
+
+    if (_.isArray(config.files)) {
+      config.files.forEach(function (entry) { augmentFilesConfig(entry, modulesPath, options.dest); });
 
     } else {
-      augmentCopyConfig(config.files, modulesPath, options.dest);
+      augmentFilesConfig(config.files, modulesPath, options.dest);
     }
 
     return config;
   };
 
-  var initCopyTask = function (moduleName, options, data) {
-    grunt.config.set('copy.front_end_modules', toCopyConfig(moduleName, options, data));
+  var toBrowserifyFilesConfig = function(moduleName, options, data) {
+    var config = _(data).clone();
+
+    if (!config.files) {
+      var modulesPath = path.join(options.modulesPath, moduleName),
+          mainFile = getModuleFiles(modulesPath, options.moduleSrcKey)[0];
+
+      if (!config.src) {
+        // Default to main file
+        config.src = path.join(modulesPath, mainFile);
+      }
+
+      config.dest = config.dest || '';
+      if (!config.dest.startsWith(options.dest)) {
+        config.dest = path.join(options.dest, config.dest);
+      }
+      if (!config.dest.endsWith('.js')) {
+        config.dest = path.join(config.dest, mainFile);
+      }
+    }
+
+    return config;
   };
 
-  var copyFiles = function () {
-    grunt.task.run('copy:front_end_modules');
+  var runAnonymousTask = function (task, config) {
+    grunt.task
+      .then(task, config)
+      .then(function() {
+        var config = grunt.config.get(task);
+        delete config.anonymous_target; // grunt-then is not cleaning itself up properly
+        grunt.config.set(task, config);
+      });
+  };
+
+  var browserify = function(moduleName, options, data) {
+    var config = toBrowserifyFilesConfig(moduleName, options, data);
+    delete config.browserify;
+    config.options = data.browserify;
+    runAnonymousTask('browserify', config);
+  };
+
+  var copyFiles = function (moduleName, options, data) {
+    runAnonymousTask('copy', toFilesConfig(moduleName, options, data));
   };
 
   var isModulesConfig = function (data) {
@@ -122,6 +177,10 @@ module.exports = function (grunt) {
 
   var isFilesConfig = function (data) {
     return data.files != null || data.src != null;
+  };
+
+  var isBrowserifyConfig = function (data) {
+    return data.browserify != null;
   };
 
   var validate = function (options, data) {
@@ -142,9 +201,11 @@ module.exports = function (grunt) {
     if (isModulesConfig(this.data)) {
       copyModules(this.data.modules, options);
 
+    } else if (isBrowserifyConfig(this.data)) {
+      browserify(this.target, options, this.data);
+
     } else if (isFilesConfig(this.data)) {
-      initCopyTask(this.target, options, this.data);
-      copyFiles();
+      copyFiles(this.target, options, this.data);
 
     } else {
       copyModule(this.target, options);

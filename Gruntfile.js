@@ -38,6 +38,13 @@ module.exports = function(grunt) {
           modulesPath: 'test/fixtures/libs/node_modules'
         }
       },
+      'pkg-specific-simple': {
+        src: 'dist/pss.js',
+        dest: 'tmp/test/dest/pkg-specific-simple',
+        test: {
+          modulesPath: 'test/fixtures/pkg-specific-simple/node_modules'
+        }
+      },
       'pkg-specific': {
         files: [
           {
@@ -81,6 +88,19 @@ module.exports = function(grunt) {
         },
         test: {
           modulesPath: 'test/fixtures/globs2/node_modules'
+        }
+      },
+      cjs: {
+        options: {
+          dest: 'tmp/test/dest/cjs'
+        },
+        browserify: {
+          browserifyOptions: {
+            standalone: 'cjs'
+          }
+        },
+        test: {
+          modulesPath: 'test/fixtures/cjs/node_modules'
         }
       }
     },
