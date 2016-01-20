@@ -45,7 +45,9 @@
   ],
   "dependencies": {
     "chalk": "^1.1.1",
+    "grunt-browserify": "^4.0.1",
     "grunt-contrib-copy": "^0.8.2",
+    "grunt-then": "^1.0.0",
     "path": "^0.12.7",
     "underscore": "^1.8.3"
   }
