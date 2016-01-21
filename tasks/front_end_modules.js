@@ -9,13 +9,15 @@
 'use strict';
 
 module.exports = function (grunt) {
-  var _ = require('underscore'),
-      path = require('path'),
-      chalk = require('chalk');
-
+  require('string.prototype.startswith');
+  require('string.prototype.endswith');
   require('grunt-then/tasks/then')(grunt);
   require('grunt-contrib-copy/tasks/copy')(grunt);
   require('grunt-browserify/tasks/browserify')(grunt);
+
+  var _ = require('underscore'),
+      path = require('path'),
+      chalk = require('chalk');
 
   var getModuleFiles = function (modulesPath, key) {
     var pkgFile = path.join(modulesPath, 'package.json');

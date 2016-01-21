@@ -49,6 +49,8 @@
     "grunt-contrib-copy": "^0.8.2",
     "grunt-then": "^1.0.0",
     "path": "^0.12.7",
+    "string.prototype.endswith": "^0.2.0",
+    "string.prototype.startswith": "^0.2.0",
     "underscore": "^1.8.3"
   }
 }
