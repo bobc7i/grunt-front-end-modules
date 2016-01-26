@@ -138,6 +138,8 @@ module.exports = function (grunt) {
       if (!config.src) {
         // Default to main file
         config.src = path.join(modulesPath, mainFile);
+      } else if (!config.src.startsWith(modulesPath)) {
+        config.src = path.join(modulesPath, config.src);
       }
 
       config.dest = config.dest || '';
